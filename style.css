@@ -1,0 +1,35 @@
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0f0f0f);
+
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+camera.position.z = 2.5;
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('glassesCanvas'), alpha: true });
+renderer.setSize(window.innerWidth * 0.9, 400);
+
+const light = new THREE.HemisphereLight(0xffffff, 0x222222, 2);
+scene.add(light);
+
+const loader = new GLTFLoader();
+const url = 'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/SimpleGlasses/glTF/SimpleGlasses.gltf';
+
+loader.load(url, function (gltf) {
+  const model = gltf.scene;
+  model.scale.set(1.5, 1.5, 1.5);
+  scene.add(model);
+});
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
